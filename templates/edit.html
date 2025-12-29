@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+  <section>
+    <!-- Заголовок страницы редактирования -->
+    <h2>Редактировать заметку</h2>
+    <!-- Форма редактирования заметки; отправка на маршрут edit -->
+    <form method="post" action="{{ url_for('edit', note_id=note.id) }}">
+      <!-- Скрытые поля Flask-WTF (CSRF-токен и др.) -->
+      {{ form.hidden_tag() }}
+      <!-- Поле заголовка заметки -->
+      <p>
+        {{ form.title.label }}<br>
+        {{ form.title(size=60) }}
+      </p>
+      <!-- Поле содержимого заметки -->
+      <p>
+        {{ form.content.label }}<br>
+        {{ form.content(rows=8, cols=60) }}
+      </p>
+      <!-- Кнопка сохранения -->
+      <p>{{ form.submit() }}</p>
+    </form>
+    <!-- Ссылка для возврата на главную страницу -->
+    <p><a href="{{ url_for('index') }}">Вернуться</a></p>
+  </section>
+{% endblock %}

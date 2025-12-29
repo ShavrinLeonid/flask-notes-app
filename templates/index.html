@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block content %}
+  <section>
+    <!-- Заголовок списка заметок -->
+    <h2>Актуальные заметки</h2>
+    <!-- Отображение текущего пользователя; если нет — гость -->
+    <p>Текущий пользователь: <strong>{{ session.get('user') or 'гость' }}</strong></p>
+    <!-- Список заметок -->
+    <ul>
+      {% for note in notes %}
+        <li>
+          <!-- Заголовок заметки -->
+          <h3>{{ note.title }}</h3>
+          <!-- Автор и дата создания -->
+          <div>Автор: {{ note.owner }} | Создано: {{ note.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</div>
+          <!-- Содержимое заметки; фильтр safe потому что текст очищен Bleach -->
+          <div>{{ note.content|safe }}</div>
+          <!-- Кнопки редактирования и удаления доступны только владельцу -->
+          {% if session.get('user') == note.owner %}
+            <div>
+              <a href="{{ url_for('edit', note_id=note.id) }}">Редактировать</a>
+              <!-- Форма удаления заметки (POST) -->
+              <form action="{{ url_for('delete', note_id=note.id) }}" method="post" style="display:inline">
+                {{ form.csrf_token }}
+                <button type="submit">Удалить</button>
+              </form>
+            </div>
+          {% endif %}
+        </li>
+      {% else %}
+        <!-- Если заметок нет -->
+        <li>Заметок пока нет.</li>
+      {% endfor %}
+    </ul>
+  </section>
+  <section>
+    <!-- Форма создания новой заметки -->
+    <h2>Добавить новую заметку</h2>
+    <form method="post" action="{{ url_for('index') }}">
+      <!-- CSRF и hidden-поле от Flask-WTF -->
+      {{ form.hidden_tag() }}
+      <!-- Поле ввода заголовка -->
+      <p>{{ form.title.label }}<br>{{ form.title(size=60) }}</p>
+      <!-- Поле ввода содержания -->
+      <p>{{ form.content.label }}<br>{{ form.content(rows=6, cols=60) }}</p>
+      <!-- Кнопка отправки -->
+      <p>{{ form.submit() }}</p>
+    </form>
+  </section>
+  <section>
+    <!-- Блок входа пользователя -->
+    <h2>Вход / переключить пользователя (демо)</h2>
+    <form method="post" action="{{ url_for('login') }}">
+      {{ login_form.hidden_tag() }}
+      <!-- Поле имени пользователя -->
+      {{ login_form.username.label }}
+      {{ login_form.username(size=30) }}
+      <!-- Кнопка входа -->
+      {{ login_form.submit() }}
+    </form>
+    <!-- Кнопка выхода отображается только при активной сессии -->
+    {% if session.get('user') %}
+      <p><a href="{{ url_for('logout') }}">Выйти</a></p>
+    {% endif %}
+  </section>
+{% endblock %}

@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <!-- Обеспечивает корректное отображение на мобильных устройствах -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Заголовок вкладки -->
+    <title>Заметки</title>
+
+    <!-- Подключение минималистичного CSS-фреймворка Simple.css -->
+    <link 
+      rel="stylesheet" 
+      href="https://cdn.simplecss.org/simple.min.css" 
+      integrity="sha384-XZhknX/RQRIxyMaAkPHsHv5+keHhOFEP5LUVZVk4ipYE302s6NFGpdWPVsMhcIui" 
+      crossorigin="anonymous"
+    >
+  </head>
+  <body>
+
+    <!-- Шапка страницы -->
+    <header>
+      <h1>Заметки</h1>
+    </header>
+
+    <main>
+      <!-- Блок отображения flash-сообщений -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <section>
+            {% for category, msg in messages %}
+              <!-- Вывод сообщения; category используется как CSS-класс -->
+              <div class="flash {{ category }}">{{ msg }}</div>
+            {% endfor %}
+          </section>
+        {% endif %}
+      {% endwith %}
+
+      <!-- Основной контент, определяется в дочерних шаблонах -->
+      {% block content %}{% endblock %}
+    </main>
+
+    <!-- Нижняя часть страницы -->
+    <footer>
+      <!-- Предупреждение о безопасности -->
+      <small>Демо-приложение </small>
+    </footer>
+
+  </body>
+</html>
