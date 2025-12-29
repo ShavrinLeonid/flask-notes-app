@@ -25,4 +25,5 @@ jobs:
 
     - name: Run Bandit (SAST)
       run: |
-        bandit -r . -ll
+        bandit app.py models.py
+
